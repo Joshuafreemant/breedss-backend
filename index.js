@@ -58,20 +58,20 @@ const storage=multer.diskStorage({
 const upload = multer({ storage });
 
 //routes with files
-app.post('/api/auth/register/', upload.single('picture'), register)
-app.post('/api/create/', verifyToken, upload.single('picture'), createPost)
+app.post('/api/auth/register', upload.single('picture'), register)
+app.post('/api/create', verifyToken, upload.single('picture'), createPost)
 
 
-app.use('/api/auth/', authRoutes)
+app.use('/api/auth', authRoutes)
 
 // user route
-app.use('/api/users/', userRoutes)
+app.use('/api/users', userRoutes)
 
 //post Route
-app.use('/api/posts/', postRoutes)
+app.use('/api/posts', postRoutes)
 
 
-app.use('/api/notifications/', notificationRoutes)
+app.use('/api/notifications', notificationRoutes)
 
 // Comment
 // app.use('/api/comment', commentRoutes)
