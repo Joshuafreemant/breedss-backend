@@ -72,7 +72,7 @@ app.post('/api/auth/register', upload.single('picture'), register)
 app.post('/api/create', verifyToken, upload.single('picture'), createPost)
 
 
-app.use('api/auth', authRoutes)
+app.use('/api/auth', authRoutes)
 
 // user route
 app.use('/api/users', userRoutes)
@@ -90,7 +90,7 @@ app.use('/api/notifications', notificationRoutes)
 
 
 //MONGOOSE SETUP
-const PORT = process.env.PORT || 6001
+const PORT = process.env.PORT || 10000
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
