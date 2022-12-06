@@ -45,6 +45,11 @@ app.use(cors({
     origin: 'https://breeds.onrender.com/',
     origin: 'http://localhost:3000/'
 }));
+
+app.use(cors({
+    origin: ['https://breeds.onrender.com/', 'https://breeds.onrender.com','http://localhost:3000/','http://localhost:3000']
+}));
+
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));//set the directory of where we store files
 
 // FILE STORAGE
