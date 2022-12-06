@@ -18,14 +18,14 @@ import postRoutes from './routes/posts.js'
 import commentRoutes from './routes/comments.js'
 import notificationRoutes from './routes/notifications.js'
 
-import { register } from './controllers/auth.js' 
+import { register } from './controllers/auth.js'
 import { createPost } from './controllers/posts.js'
 
 import { verifyToken } from './middleware/auth.js'
 
 import User from './models/User.js'
 import Post from './models/Post.js'
-import {users, posts} from './data/index.js'
+import { users, posts } from './data/index.js'
 
 // CONFIGURATIONS
 
@@ -44,17 +44,22 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
 
 app.use(cors({
-    origin: ['https://breeds.onrender.com/', 'https://breeds.onrender.com','http://localhost:3000/','http://localhost:3000']
+    origin: [
+        'https://breeds.onrender.com/',
+        'https://breeds.onrender.com',
+        'http://localhost:3000/',
+        'http://localhost:3000'
+    ]
 }));
 
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));//set the directory of where we store files
 
 // FILE STORAGE
-const storage=multer.diskStorage({
-    destination:(req,file,cb)=>{
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
         cb(null, 'public/assets');
     },
-    filename:(req,file,cb)=>{
+    filename: (req, file, cb) => {
         cb(null, file.originalname);
     }
 });
@@ -67,7 +72,7 @@ app.post('/api/auth/register', upload.single('picture'), register)
 app.post('/api/create', verifyToken, upload.single('picture'), createPost)
 
 
-app.use('/api/auth', authRoutes)
+app.use('api/auth', authRoutes)
 
 // user route
 app.use('/api/users', userRoutes)
@@ -88,7 +93,7 @@ app.use('/api/notifications', notificationRoutes)
 const PORT = process.env.PORT || 6001
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true, 
+    useUnifiedTopology: true,
 }).then(() => {
     app.listen(PORT, () => console.log(`Server is running on: ${PORT}`))
 
