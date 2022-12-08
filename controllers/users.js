@@ -22,8 +22,8 @@ export const getUserFriends = async (req, res) => {
         const friends = await Promise.all(
             user.friends.map((id) => User.findById(id))
         )
-        const formattedFriends = friends.map(({ _id, fullName, location, username, bio, picturePath  }) => {
-            return { _id, fullName, location, username, bio, picturePath  }
+        const formattedFriends = friends.map(({ _id, fullName, location, username, bio, picturePath }) => {
+            return { _id, fullName, location, username, bio, picturePath }
         })
         res.status(200).json({ formattedFriends })
     } catch (err) {
@@ -37,34 +37,59 @@ export const addRemoveFriend = async (req, res) => {
         const user = await User.findById(id)
         const friend = await User.findById(friendId)
 
-        if (user.friends.includes(friendId)) {
-            user.friends = user.friends.filter((id) => id !== friendId)
-            friend.friends = friend.friends.filter((id) => id !== id)
-        } else {
-            user.friends.push(friendId)
-            friend.friends.push(id)
+
+
+        let friendd = {
+            'userId': friend._id,
+            'fullName': friend.fullName,
+            'bio': friend.bio,
+            'picturePath': friend.picturePath,
+            'username': friend.username
+        };
+
+        let myself = {
+            'userId': user._id,
+            'fullName': user.fullName,
+            'bio': user.bio,
+            'picturePath': user.picturePath,
+            'username': user.username
+        };
+
+
+
+
+
+        if (user.friends.filter(fri => (fri.fullName === friend.fullName && fri.username === friend.username )).length) {
+            user.friends = user.friends.filter(frie => frie.username !== friend.username);
+            friend.friends = friend.friends.filter(frie => frie.username !== user.username);
         }
+        else {
+            user.friends.push(friendd);
+            friend.friends.push(myself);
+        }
+
         await user.save();
         await friend.save();
 
-        const friends = await Promise.all(
-            user.friends.map((id) => User.findById(id))
-        )
-        const formattedFriends = friends.map(({ _id, fullName, location, username, bio, picturePath }) => {
-            return { _id, fullName, location, username, bio, picturePath }
-        })
-        res.status(200).json({ formattedFriends })
+        const userFriends = await User.findById(id); //return all posts to the frontend
+        res.status(200).json({ userFriends});
+    
 
     } catch (err) {
         console.log(err)
         res.status(404).json({ message: err.message })
     }
 }
+
+
+
+
+
 export const getAllUser = async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
- 
+
     } catch (err) {
         res.status(404).json({ message: err.message })
     }
@@ -82,32 +107,31 @@ export const updateUser = async (req, res) => {
             id,
             { bio: bio },
             { new: true }
-          );
-      
-          res.status(200).json({message:'success', updatedUser});
+        );
 
-        } catch (err) {
-            res.status(404).json({ message: err.message });
-        }
-    };
+        res.status(200).json({ message: 'success', updatedUser });
+
+    } catch (err) {
+        res.status(404).json({ message: err.message });
+    }
+};
 
 
 
-    // Delete
-    
-    export const deleteUser = async (req, res) => {
-        try {
-      
-          const { id } = req.params;
-          await User.deleteOne({ _id: id });
-          await Post.deleteMany({ userId: id });
+// Delete
 
-          const users = await User.find(); //return all posts to the frontend
+export const deleteUser = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+        await User.deleteOne({ _id: id });
+        await Post.deleteMany({ userId: id });
+
+        const users = await User.find(); //return all posts to the frontend
         //   const users = await Post.find(); //return all posts to the frontend
-          res.status(200).json({msg:'User Deleted Successfully', users});
-      
-        } catch (err) {
-          res.status(404).json({ message: err.message });
-        }
-      };
-      
+        res.status(200).json({ msg: 'User Deleted Successfully', users });
+
+    } catch (err) {
+        res.status(404).json({ message: err.message });
+    }
+};

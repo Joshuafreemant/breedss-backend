@@ -43,7 +43,9 @@ const UserSchema = new mongoose.Schema({
     },
     // friends: [{
     //     userId: String,
-    //     comment: String
+    //     fullName: String,
+    //     bio: String,
+    //     picturePath: String,
     //  }],
     viewProfile: {
         type: Number,
